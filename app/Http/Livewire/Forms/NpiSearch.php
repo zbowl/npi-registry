@@ -352,7 +352,7 @@ class NpiSearch extends Component
 
             $this->resultErrors = $customError;
         } else {
-            $this->results = $npiRegistry->getData($this->queryParameters);
+            $this->results = $response['data'];
         }
     }
 
@@ -364,7 +364,7 @@ class NpiSearch extends Component
     public function refreshDefaults()
     {
         $this->resultErrors = '';
-        $this->resetPage();
+
     }
     public function render()
     {

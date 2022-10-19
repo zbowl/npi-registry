@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\NPIController;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -118,10 +118,6 @@
 
                         <div class="flex items-center justify-center md:gap-8 gap-4 pt-8 pb-2">
                             <button
-                                class="w-auto bg-gray-500 hover:bg-gray-700 rounded-lg shadow-xl font-medium text-white px-4 py-2">
-                                Cancel
-                            </button>
-                            <button
                                 class="w-auto bg-purple-500 hover:bg-purple-700 rounded-lg shadow-xl font-medium text-white px-4 py-2">
                                 Search
                             </button>
@@ -149,16 +145,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($results['results'] as $index => $result)
+                        @foreach($results as $index => $result)
                             <tr
                                 wire:key="result-row-{{ $index }}"
                                 id="result-row-{{ $index }}"
                             >
                                 <td class="px-6 py-2 border border-teal-600 bg-blue-200 text-left text-black">
-                                    @if(isset($result['basic']['first_name']))
-                                        {{ $result['basic']['first_name'] . ' ' . $result['basic']['last_name'] }}
+                                    @if(isset($result['first_name']))
+                                        {{ $result['first_name'] . ' ' . $result['last_name'] }}
                                     @else
-                                        {{ $result['basic']['organization_name'] }}
+                                        {{ $result['organization_name'] }}
                                     @endif
                                 </td>
                                 <td class="px-6 py-2 border border-teal-600 bg-blue-200 text-left text-black">

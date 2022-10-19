@@ -2,36 +2,18 @@
 
 namespace App\API\npi;
 
+use App\API\Npi\Resources\Npi;
+use App\Api\Npi\Resources\NpiCollection;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Collection;
 
 class Client
 {
-    public $parameters = [
-        'query' => [
-            'version'               => '2.1',
-            'number'                => '',
-            'enumeration_type'      => 'NPI-1', // 'NPI-1' || 'NPI-2' NPI-1 = Individuals, NPI-2 = Organizations
-            'taxonomy_description'  => '',
-            'first_name'            => 'he*',
-            'use_first_name_alias'  => 'false',
-            'last_name'             => 'fa*',
-            //'organization_name'     => '',
-            'address_purpose'       => '',
-            'city'                  => '',
-            'state'                 => '',
-            'postal_code'           => '',
-            'limit'                 => '',
-            'skip'                  => '',
-            'pretty'                => '',
-        ]
-    ];
-
     public function client()
     {
         $client = new GuzzleClient([
-            //'base_uri' => 'https://npiregistry.cms.hhs.gov/api',
             'headers' => [
                 'Content-Type' => 'application/json',
                 'X-Requested-With' => 'XMLHttpRequest'
@@ -48,43 +30,18 @@ class Client
     {
         $client = $this->client();
 
-            $response = $client->get('https://npiregistry.cms.hhs.gov/api/', [
-                'query' => $parameters
-            ])
-                ->getBody()
-                ->getContents();
+        $response = $client->get('https://npiregistry.cms.hhs.gov/api/', [
+            'query' => $parameters
+        ])
+            ->getBody()
+            ->getContents();
+        $data = json_decode($response, true);
 
-        return json_decode($response, true);
-    }
-
-    public function testRequest()
-    {
-        $params = [
-            'query' => [
-                'version'               => '2.1',
-                'number'                => '',
-                'enumeration_type'      => 'NPI-1', // 'NPI-1' || 'NPI-2' NPI-1 = Individuals, NPI-2 = Organizations
-                'taxonomy_description'  => '',
-                'first_name'            => '',
-                'use_first_name_alias'  => 'true',
-                'last_name'             => '',
-                //'organization_name'     => '',
-                'address_purpose'       => 'Primary',
-                'city'                  => '',
-                'state'                 => 'CA',
-                'postal_code'           => '95620',
-                'country_code'          => 'US',
-                //'limit'                 => '',
-                //'skip'                  => '',
-                //'pretty'                => '',
-            ]
-        ];
-        $client = $this->client();
-        $url = '';
-        $response = $client->get('https://npiregistry.cms.hhs.gov/api/',$params);
-        $response = $response->getBody()->getContents();
-        dd(json_decode($response));
-
+        if (isset($data['Errors'])) {
+            return $data;
+        } else {
+            return NpiCollection::make($data['results'])->resolve();
+        }
 
     }
 }
